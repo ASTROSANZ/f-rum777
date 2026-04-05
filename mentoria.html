@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentoria</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f2ec;
+      --card: #ffffff;
+      --ink: #1a1612;
+      --muted: #8a8278;
+      --line: #e4dfd8;
+      --accent: #c8490a;
+      --accent-light: #fdf0ea;
+      --open-bg: #fafaf8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 3rem;
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    header p {
+      margin-top: 0.8rem;
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 420px;
+      line-height: 1.6;
+    }
+
+    /* Divider */
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: var(--accent);
+      margin: 1.5rem 0 2.5rem;
+    }
+
+    /* Tópicos */
+    .topics {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .topic {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .topic:hover {
+      border-color: #ccc8c2;
+    }
+
+    /* Header do tópico */
+    .topic-head {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 1.2rem 1.5rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+
+    .topic-head:hover {
+      background: #fdfcfb;
+    }
+
+    .topic-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      min-width: 24px;
+      opacity: 0.8;
+    }
+
+    .topic-title {
+      flex: 1;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+
+    .topic-arrow {
+      width: 18px;
+      height: 18px;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+    }
+
+    .topic.open .topic-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Corpo expansível */
+    .topic-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(.4,0,.2,1);
+    }
+
+    .topic.open .topic-body {
+      max-height: 1000px;
+    }
+
+    .topic-inner {
+      padding: 0 1.5rem 1.5rem 3.8rem;
+      border-top: 1px solid var(--line);
+      padding-top: 1.2rem;
+    }
+
+    .topic-text {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: #4a4540;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 4rem;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Mentoria Profissional</div>
+    <h1>Seus materiais<br>de estudo</h1>
+    <div class="divider"></div>
+    <p>Clique em cada módulo para expandir o conteúdo.</p>
+  </header>
+
+  <div class="topics" id="topics"></div>
+
+  <footer>Atualizado por você diretamente no código</footer>
+
+</div>
+
+<script>
+// ================================================================
+// ✏️  EDITE AQUI — apenas mude titulo e conteudo de cada tópico
+//     Para adicionar: copie um bloco { } e cole antes do último ]
+//     Para remover: apague o bloco { } inteiro
+// ================================================================
+const TOPICOS = [
+  {
+    titulo: "🎯 Boas-vindas à Mentoria",
+    conteudo: `Olá! Seja bem-vindo à sua mentoria.
+
+Aqui você vai encontrar todos os materiais, dicas e conteúdos que preparei especialmente para você.
+
+Clique em cada módulo abaixo para expandir e ler o conteúdo completo.`
+  },
+  {
+    titulo: "📚 Módulo 1 — Fundamentos",
+    conteudo: `Neste primeiro módulo vamos abordar:
+
+- Mentalidade de crescimento
+- Estabelecimento de metas SMART
+- Rotina de alta performance
+
+📌 Exercício: Escreva suas 3 principais metas para os próximos 30 dias e envie para mim.`
+  },
+  {
+    titulo: "🛠️ Módulo 2 — Ferramentas",
+    conteudo: `Ferramentas que recomendo:
+
+- Notion para organização
+- Obsidian para anotações
+- Toggl para gestão de tempo
+
+🔗 Planilha de acompanhamento: (cole o link aqui)
+🔗 Template de rotina semanal: (cole o link aqui)`
+  },
+  {
+    titulo: "💡 Dicas e Materiais Extras",
+    conteudo: `Leituras recomendadas:
+
+📖 O Poder do Hábito — Charles Duhigg
+📖 Deep Work — Cal Newport
+📖 Pai Rico Pai Pobre — Robert Kiyosaki
+
+Grupo exclusivo de dúvidas: (cole o link aqui)
+
+Qualquer dúvida é só me chamar!`
+  }
+];
+// ================================================================
+
+const container = document.getElementById("topics");
+
+TOPICOS.forEach((t, i) => {
+  const div = document.createElement("div");
+  div.className = "topic";
+
+  const head = document.createElement("div");
+  head.className = "topic-head";
+  head.innerHTML = `
+    <span class="topic-num">${String(i + 1).padStart(2, "0")}</span>
+    <span class="topic-title">${t.titulo}</span>
+    <svg class="topic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  `;
+
+  const body = document.createElement("div");
+  body.className = "topic-body";
+
+  const inner = document.createElement("div");
+  inner.className = "topic-inner";
+
+  const text = document.createElement("div");
+  text.className = "topic-text";
+  text.textContent = t.conteudo;
+
+  inner.appendChild(text);
+  body.appendChild(inner);
+  div.appendChild(head);
+  div.appendChild(body);
+  container.appendChild(div);
+
+  head.addEventListener("click", () => {
+    const isOpen = div.classList.contains("open");
+    // fecha todos
+    document.querySelectorAll(".topic.open").forEach(el => el.classList.remove("open"));
+    // abre só o clicado (se estava fechado)
+    if (!isOpen) div.classList.add("open");
+  });
+});
+</script>
+</body>
+</html>
